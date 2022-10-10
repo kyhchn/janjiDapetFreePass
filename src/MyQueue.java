@@ -1,5 +1,5 @@
 public class MyQueue<T> {
-    Node<T> head, tail = null;
+    Node<T> head = null;
     int size = 0;
 
     MyQueue() {
@@ -14,44 +14,53 @@ public class MyQueue<T> {
     }
 
     public void clear() {
-        head = tail = null;
+        head = null;
         size = 0;
     }
 
-    public boolean add(T data) {
+    public void enqueue(T data) {
         Node<T> newNode = new Node<>(data);
         if (isEmpty()) {
-            this.head = this.tail = newNode;
-            size++;
-            return true;
-        } else {
-            
-        }
-    }
-
-    public T element(){
-        return head.data;
-    }
-
-
-
-    public boolean remove(T data) {
-        if (isEmpty()) {
-            return false;
+            this.head = null;
         } else {
             Node<T> temp = head;
             while (temp != null) {
-                if (temp.data.equals(data)) {
-                    temp.prev.next = temp.next;
-                    temp.next.prev = temp.prev;
-                    size--;
-                    return true;
-                }
-                if (temp.next != null) {
-                    temp = temp.next;
+                if (temp.next == null) {
+                    temp.next = newNode;
+                    break;
                 }
             }
-            return false;
+            size++;
+        }
+    }
+
+    public void dequeue() {
+        if (!isEmpty()) {
+            head.next.prev = null;
+            head = head.next;
+            size--;
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
+    public T getFrontAndDequeue() {
+        if (!isEmpty()) {
+            Node<T> temp = head;
+            head.next.prev = null;
+            head = head.next;
+            size--;
+            return temp.data;
+        } else {
+            throw new NullPointerException();
+        }
+    }
+
+    public T peek() {
+        if (!isEmpty()) {
+            return head.data;
+        } else {
+            throw new NullPointerException();
         }
     }
 
@@ -78,7 +87,9 @@ public class MyQueue<T> {
         int index = 0;
         while (tempNode != null) {
             tempArray[index] = tempNode.data;
-            tempNode = tempNode.next;
+            if (tempNode.next != null) {
+                tempNode = tempNode.next;
+            }
             index++;
         }
         return tempArray;
